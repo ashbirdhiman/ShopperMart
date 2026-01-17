@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: application
+
+# Default Eureka Configuration
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+    prefer-ip-address: true
+  instance:
+    prefer-ip-address: true
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.shoppermart: DEBUG
