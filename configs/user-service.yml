@@ -6,13 +6,10 @@ spring:
     username: root
     password: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-  sql:
-    init:
-      mode: on_create
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: false
     properties:
       hibernate:
