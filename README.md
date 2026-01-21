@@ -114,6 +114,9 @@ ShopperMart/
 └── pom.xml                     # Root Maven POM
 ```
 
+##Frontend 
+- ** Using Angular - Under Development**
+
 ## Prerequisites
 
 - **Java 17+**
@@ -213,11 +216,6 @@ Run the data population script:
 ### Loki
 
 - Integrated log aggregation
-- Accessible through Grafana
-
-### Tempo
-
-- Distributed tracing
 - Accessible through Grafana
 
 ## API Documentation
