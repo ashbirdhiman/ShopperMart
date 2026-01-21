@@ -1,0 +1,24 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Build
+target/
+build/
+*.jar
+*.class
+*.log
+
+# Environment
+.env
+.env.local
+
+# Data (exclude database and cache files)
+data/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# macOS
+.DS_Store
