@@ -43,7 +43,7 @@ spring:
       enabled: true
 
 server:
-  port: 8085
+  port: 8087
 
 # Eureka Configuration
 eureka:
