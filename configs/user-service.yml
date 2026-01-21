@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
-      mode: on-create
+      mode: on_create
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
