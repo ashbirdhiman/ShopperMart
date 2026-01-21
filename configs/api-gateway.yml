@@ -16,12 +16,14 @@ spring:
     prefer-ip-address: true
 
 # Eureka Configuration
+server:
+  port: 8082
+
 eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-server:8761/eureka/
     prefer-ip-address: true
-
 
 # Actuator & Prometheus
 management:
