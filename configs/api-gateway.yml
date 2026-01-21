@@ -15,6 +15,14 @@ spring:
           jwk-set-uri: http://keycloak:8080/realms/shoppermart/protocol/openid-connect/certs
     prefer-ip-address: true
 
+# Eureka Configuration
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+    prefer-ip-address: true
+
+
 # Actuator & Prometheus
 management:
   endpoints:
