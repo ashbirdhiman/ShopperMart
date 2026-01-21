@@ -2,7 +2,7 @@ spring:
   application:
     name: Order-Service
   datasource:
-    url: jdbc:mysql://order-service-mysql:3307/order_service
+    url: jdbc:mysql://order-service-mysql:3306/order_service
     username: root
     password: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
