@@ -1,0 +1,21 @@
+logging:
+  level:
+    com.shoppermart.orderservice.FeignClients.InventoryClient: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+    feign: DEBUG
+
+spring:
+  cloud:
+    loadbalancer:
+      cache:
+        enabled: true
+    openfeign:
+      client:
+        config:
+          inventory-service:
+            connect-timeout: 5000
+            read-timeout: 5000
+            logger-level: full
+      discovery:
+        enabled: true
