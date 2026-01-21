@@ -16,9 +16,7 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: always
-      data-locations: classpath:data.sql
-      schema-locations: classpath:schema.sql
+      mode: never
   kafka:
     template:
       default-topic: order-placed
