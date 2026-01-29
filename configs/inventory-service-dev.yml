@@ -1,18 +1,56 @@
 spring:
+  profiles:
+    active: dev
+
   application:
     name: Inventory-Service
+
   datasource:
-    url: jdbc:mysql://localhost:3308/inventory_service?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/inventory_service?createDatabaseIfNotExist=true
     username: root
     password: mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+
   sql:
     init:
       mode: never
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: inventory-service
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: "*"
+            value:
+              default:
+                type: com.shoppermart.inventoryservice.events.OrderPlaceEvent
+
+            use:
+              type:
+                headers: false
+
+    listener:
+      ack-mode: manual
 
 server:
   port: 8083

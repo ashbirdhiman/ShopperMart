@@ -30,6 +30,28 @@ spring:
             add:
               type:
                 headers: false
+    consumer:
+      group-id: order-service
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: "*"
+            value:
+              default:
+                type: com.shoppermart.orderservice.Fullfillment.event.InventoryReservedEvent
+            use:
+              type:
+                headers: false
   cloud:
     loadbalancer:
       nacos:
