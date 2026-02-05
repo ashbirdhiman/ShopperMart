@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: Order-Service
+  datasource:
+    url: jdbc:mysql://order-service-mysql:3306/order_service
+    username: root
+    password: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: never
+  kafka:
+    template:
+      default-topic: order-placed
+    bootstrap-servers: kafka:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+    consumer:
+      group-id: order-service
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: "*"
+            value:
+              default:
+                type: com.shoppermart.orderservice.Fullfillment.event.InventoryReservedEvent
+            use:
+              type:
+                headers: false
+  cloud:
+    loadbalancer:
+      nacos:
+        enabled: false
+      ribbon:
+        enabled: false
+    openfeign:
+      discovery:
+        enabled: true
+    discovery:
+      enabled: true
+
+server:
+  port: 8087
+
+# Eureka Configuration
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+    prefer-ip-address: true
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+
+# Spring Cloud LoadBalancer Configuration
+feign:
+  httpclient:
+    enabled: false
+
+# Actuator & Prometheus
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true

@@ -10,5 +10,5 @@ COPY target/config-server-0.0.1-SNAPSHOT.jar config-server.jar
 # Expose the port your app runs on
 EXPOSE 8080
 
-# Command to run the jar file
-ENTRYPOINT ["java", "-jar", "config-server.jar"]
+# Command to run the jar file with native profile
+ENTRYPOINT ["java", "-jar", "config-server.jar", "--spring.profiles.active=native"]

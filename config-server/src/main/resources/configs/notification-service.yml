@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: notification-service
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: notification-service
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: "*"
+            value:
+              default:
+                type: com.shoppermart.notificationservice.event.NotificationEvent
+            use:
+              type:
+                headers: false
+server:
+  port: 8086
+
+# Eureka Configuration
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+    prefer-ip-address: true
+
+# Actuator & Prometheus
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true

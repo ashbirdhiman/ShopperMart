@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: Product-Service
+  data:
+    mongodb:
+      uri: mongodb://root:password@mongodb:27017/product-service?authSource=admin
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8081
+
+# Actuator & Prometheus
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
