@@ -84,6 +84,7 @@ services:
       - "8086:8086"
     environment:
       - SPRING_APPLICATION_NAME=notification-service
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
       - SPRING_PROFILES_ACTIVE=default
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
     healthcheck:
