@@ -10,7 +10,7 @@ ShopperMart is a distributed microservices application designed for handling onl
 
 The project follows an **Event-Driven Microservices Architecture** with Saga Orchestration pattern:
 
-![Architecture Diagram](kaka-shoppemart.jpg)
+![Architecture Diagram](kafka-shoppermart.jpg)
 
 ### Architecture Highlights
 
