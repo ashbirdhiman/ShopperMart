@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\Ashbir Dhiman\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose-infra.yml --volumes persistentVolumeClaim
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: keycloak-mysql
+  name: keycloak-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: keycloak-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\Ashbir Dhiman\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose-infra.yml --volumes persistentVolumeClaim
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: keycloak-mysql
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: keycloak
+            - name: MYSQL_PASSWORD
+              value: keycloak
+            - name: MYSQL_ROOT_PASSWORD
+              value: mysql
+            - name: MYSQL_USER
+              value: keycloak
+          image: mysql:8.3.0
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -ukeycloak
+                - -pkeycloak
+            failureThreshold: 15
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: keycloak-mysql
+          ports:
+            - containerPort: 3306
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: keycloak-mysql-claim0
+      restartPolicy: Always
+      volumes:
+        - name: keycloak-mysql-claim0
+          persistentVolumeClaim:
+            claimName: keycloak-mysql-claim0

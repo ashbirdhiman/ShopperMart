@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\Ashbir Dhiman\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f .\docker-compose-services.yml
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: config-server
+  name: config-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: config-server
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\Ashbir Dhiman\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f .\docker-compose-services.yml
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: config-server
+    spec:
+      containers:
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: default
+          image: ashbirdhiman/shoppermart-config-server:latest
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8888
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          name: config-server
+          ports:
+            - containerPort: 8888
+              protocol: TCP
+      restartPolicy: Always
