@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\Ashbir Dhiman\AppData\Local\Microsoft\WinGet\Packages\Kubernetes.kompose_Microsoft.Winget.Source_8wekyb3d8bbwe\kompose.exe convert -f docker-compose-infra.yml --volumes persistentVolumeClaim
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: inventory-service-mysql
+  name: inventory-service-mysql
+spec:
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+  selector:
+    io.kompose.service: inventory-service-mysql

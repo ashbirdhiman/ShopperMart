@@ -1,11 +1,17 @@
 package com.shoppermart.orderservice.Model;
 
 import jakarta.persistence.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,12 +19,14 @@ public class Order {
     
     @Column(name = "customer_id", length = 36, nullable = false)
     private String customerId;
-    
-    @Column(name = "sku_code", nullable = false)
-    private String skuCode;
-    
-    @Column(nullable = false)
-    private Integer quantity;
+
+    @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
+    @MapKeyColumn(name = "sku_code")
+    @Column(name = "quantity", columnDefinition = "INT DEFAULT 1", nullable = false)
+    @Schema(description = "Map of SKU codes to quantities. Key: SKU code (e.g., 'SKU-LAPTOP-001'), Value: quantity ordered", 
+            example = "{\"SKU-LAPTOP-001\": 2, \"SKU-MOUSE-001\": 5}")
+    private Map<String, Integer> skuCodeQuantityMap;
     
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
@@ -32,20 +40,18 @@ public class Order {
 
     public Order() {}
 
-    public Order(Long id, String customerId, String skuCode, Integer quantity, BigDecimal totalPrice, OrderStatus status, LocalDateTime createdAt) {
+    public Order(Long id, String customerId, Map<String, Integer> skuCodeQuantityMap, BigDecimal totalPrice, OrderStatus status, LocalDateTime createdAt) {
         this.id = id;
         this.customerId = customerId;
-        this.skuCode = skuCode;
-        this.quantity = quantity;
+        this.skuCodeQuantityMap = skuCodeQuantityMap;
         this.totalPrice = totalPrice;
         this.status = status;
         this.createdAt = createdAt;
     }
 
-    public Order(String customerId, String skuCode, Integer quantity, BigDecimal totalPrice, OrderStatus status) {
+    public Order(String customerId, Map<String, Integer> skuCodeQuantityMap, BigDecimal totalPrice, OrderStatus status) {
         this.customerId = customerId;
-        this.skuCode = skuCode;
-        this.quantity = quantity;
+        this.skuCodeQuantityMap = skuCodeQuantityMap;
         this.totalPrice = totalPrice;
         this.status = status;
     }
@@ -73,20 +79,12 @@ public class Order {
         this.customerId = customerId;
     }
 
-    public String  getSkuCode() {
-        return skuCode;
+    public Map<String, Integer> getSkuCodeQuantityMap() {
+        return skuCodeQuantityMap;
     }
 
-    public void setSkuCode(String productId) {
-        this.skuCode = productId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setSkuCodeQuantityMap(Map<String, Integer> skuCodeQuantityMap) {
+        this.skuCodeQuantityMap = skuCodeQuantityMap;
     }
 
     public BigDecimal getTotalPrice() {
@@ -117,9 +115,8 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", customerId=" + customerId +
-                ", productId=" + skuCode +
-                ", quantity=" + quantity +
+                ", customerId='" + customerId + '\'' +
+                ", skuCodeQuantityMap=" + skuCodeQuantityMap +
                 ", totalPrice=" + totalPrice +
                 ", status=" + status +
                 ", createdAt=" + createdAt +
@@ -135,8 +132,8 @@ public class Order {
 
         if (id != null ? !id.equals(order.id) : order.id != null) return false;
         if (customerId != null ? !customerId.equals(order.customerId) : order.customerId != null) return false;
-        if (skuCode != null ? !skuCode.equals(order.skuCode) : order.skuCode != null) return false;
-        if (quantity != null ? !quantity.equals(order.quantity) : order.quantity != null) return false;
+
+        if (!Objects.equals(skuCodeQuantityMap, order.skuCodeQuantityMap)) return false;
         if (totalPrice != null ? !totalPrice.equals(order.totalPrice) : order.totalPrice != null) return false;
         if (status != order.status) return false;
         return createdAt != null ? createdAt.equals(order.createdAt) : order.createdAt == null;
@@ -146,8 +143,7 @@ public class Order {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
-        result = 31 * result + (skuCode != null ? skuCode.hashCode() : 0);
-        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+        result = 31 * result + (skuCodeQuantityMap != null ? skuCodeQuantityMap.hashCode() : 0);
         result = 31 * result + (totalPrice != null ? totalPrice.hashCode() : 0);
         result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
@@ -161,8 +157,7 @@ public class Order {
     public static class Builder {
         private Long id;
         private String customerId;
-        private String skuCode;
-        private Integer quantity;
+        private Map<String, Integer> skuCodeQuantityMap;
         private BigDecimal totalPrice;
         private OrderStatus status;
         private LocalDateTime createdAt;
@@ -177,13 +172,8 @@ public class Order {
             return this;
         }
 
-        public Builder productId(String skuCode) {
-            this.skuCode = skuCode;
-            return this;
-        }
-
-        public Builder quantity(Integer quantity) {
-            this.quantity = quantity;
+        public Builder skuCodeQuantityMap(Map<String, Integer> skuCodeQuantityMap) {
+            this.skuCodeQuantityMap = skuCodeQuantityMap;
             return this;
         }
 
@@ -203,7 +193,7 @@ public class Order {
         }
 
         public Order build() {
-            return new Order(id, customerId, skuCode, quantity, totalPrice, status, createdAt);
+            return new Order(id, customerId, skuCodeQuantityMap, totalPrice, status, createdAt);
         }
     }
 }

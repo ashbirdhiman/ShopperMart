@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: chatbot-product-service
+  name: chatbot-product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chatbot-product-service
+  template:
+    metadata:
+      labels:
+        io.kompose.service: chatbot-product-service
+    spec:
+      containers:
+        - name: chatbot-product-service
+          image: ashbirdhiman/shoppermart-chatbot-product-service
+          ports:
+            - containerPort: 29233
+              protocol: TCP
+
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: chatbot-product-service
+            - name: SPRING_CONFIG_IMPORT
+              value: optional:configserver:http://config-server:8888
+            - name: SPRING_PROFILES_ACTIVE
+              value: default
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 29233
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 29233
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+      restartPolicy: Always
